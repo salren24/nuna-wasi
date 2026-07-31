@@ -98,7 +98,7 @@ export default function Footer() {
             Ubicación
           </h4>
           <p className="font-body-md text-on-surface-variant mb-4">
-            Calle de los Girasoles 123, Valle Sagrado, Cusco - Perú
+            Valle de Cieneguilla, Lima - Perú
           </p>
           <div className="w-full h-32 rounded-lg bg-surface-container overflow-hidden">
             <div
