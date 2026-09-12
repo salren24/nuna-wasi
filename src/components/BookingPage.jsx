@@ -2,16 +2,32 @@ import { useEffect, useMemo, useState } from "react";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import { tourIncludes } from "../data/content";
+import { supabase } from "../lib/supabaseClient";
 
 const ADULT_PRICE = 25;
 const CHILD_PRICE = 15;
 const DEPOSIT_RATE = 0.5;
 const WEEKDAYS = ["DO", "LU", "MA", "MI", "JU", "VI", "SA"];
+const GROUP_CAPACITY = 15;
+const MIN_LEAD_DAYS = 3;
 
 function startOfDay(date) {
   const d = new Date(date);
   d.setHours(0, 0, 0, 0);
   return d;
+}
+
+function addDays(date, days) {
+  const d = new Date(date);
+  d.setDate(d.getDate() + days);
+  return d;
+}
+
+function toDateKey(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
 function buildCalendarDays(viewDate) {
@@ -67,18 +83,46 @@ export default function BookingPage() {
   }, []);
 
   const today = useMemo(() => startOfDay(new Date()), []);
+  const minBookableDate = useMemo(() => addDays(today, MIN_LEAD_DAYS), [today]);
   const [viewDate, setViewDate] = useState(
     () => new Date(today.getFullYear(), today.getMonth(), 1)
   );
   const [selectedDate, setSelectedDate] = useState(null);
   const [adults, setAdults] = useState(0);
   const [children, setChildren] = useState(0);
+  const [availability, setAvailability] = useState({});
+  const [formData, setFormData] = useState({ fullName: "", email: "", phone: "", notes: "" });
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState(null);
   const [submitted, setSubmitted] = useState(false);
 
   const calendarDays = useMemo(() => buildCalendarDays(viewDate), [viewDate]);
   const monthLabel = viewDate
     .toLocaleDateString("es-PE", { month: "long", year: "numeric" })
     .replace(/^./, (c) => c.toUpperCase());
+
+  useEffect(() => {
+    const year = viewDate.getFullYear();
+    const month = viewDate.getMonth();
+    const rangeStart = toDateKey(new Date(year, month, 1));
+    const rangeEnd = toDateKey(new Date(year, month + 1, 0));
+
+    let cancelled = false;
+    supabase
+      .rpc("get_booking_availability", { p_start: rangeStart, p_end: rangeEnd })
+      .then(({ data, error }) => {
+        if (cancelled || error || !data) return;
+        const map = {};
+        data.forEach((row) => {
+          map[row.tour_date] = Number(row.total_participants);
+        });
+        setAvailability(map);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [viewDate]);
 
   const subtotal = adults * ADULT_PRICE + children * CHILD_PRICE;
   const depositDue = subtotal * DEPOSIT_RATE;
@@ -87,8 +131,39 @@ export default function BookingPage() {
   const changeMonth = (delta) =>
     setViewDate((prev) => new Date(prev.getFullYear(), prev.getMonth() + delta, 1));
 
-  const handleSubmit = (e) => {
+  const handleFieldChange = (field) => (e) =>
+    setFormData((prev) => ({ ...prev, [field]: e.target.value }));
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!selectedDate || adults + children === 0 || submitting) return;
+
+    setSubmitting(true);
+    setSubmitError(null);
+
+    const { error } = await supabase.from("bookings").insert({
+      tour_date: toDateKey(selectedDate),
+      adults,
+      children,
+      full_name: formData.fullName,
+      email: formData.email,
+      phone: formData.phone,
+      notes: formData.notes || null,
+      subtotal,
+      deposit_due: depositDue,
+      balance_due: balanceDue,
+    });
+
+    if (error) {
+      console.error("Error al crear la reserva:", error);
+      setSubmitError(
+        "No pudimos registrar tu reserva. Por favor intenta de nuevo en unos minutos."
+      );
+      setSubmitting(false);
+      return;
+    }
+
+    setSubmitting(false);
     setSubmitted(true);
   };
 
@@ -108,7 +183,7 @@ export default function BookingPage() {
 
         <section className="max-w-container-max mx-auto px-6 md:px-16 grid grid-cols-1 lg:grid-cols-12 gap-12">
           <div className="lg:col-span-7 space-y-12">
-            <div className="bg-white rounded-xl p-8 shadow-[0_10px_30px_rgba(217,119,6,0.08)]">
+            <div className="bg-white rounded-xl p-8 elevation-l2">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="font-headline-sm text-headline-sm text-primary flex items-center gap-2">
                   <span className="material-symbols-outlined">calendar_today</span>
@@ -142,16 +217,29 @@ export default function BookingPage() {
                 ))}
                 {calendarDays.map((date, index) => {
                   if (!date) return <div key={`blank-${index}`} className="py-4" />;
+                  const dateKey = toDateKey(date);
                   const isPast = date < today;
+                  const isSaturday = date.getDay() === 6;
+                  const isTooSoon = date < minBookableDate;
+                  const bookedCount = availability[dateKey] || 0;
+                  const isFull = bookedCount >= GROUP_CAPACITY;
+                  const isDisabled = isPast || isSaturday || isTooSoon || isFull;
                   const isSelected = selectedDate && date.getTime() === selectedDate.getTime();
+
+                  let title;
+                  if (isFull) title = "Cupo completo";
+                  else if (isSaturday) title = "No disponible los sábados";
+                  else if (isTooSoon) title = `Requiere ${MIN_LEAD_DAYS} días de anticipación`;
+
                   return (
                     <button
                       type="button"
-                      key={date.toISOString()}
-                      disabled={isPast}
+                      key={dateKey}
+                      disabled={isDisabled}
+                      title={title}
                       onClick={() => setSelectedDate(date)}
                       className={`py-4 rounded-lg transition-colors ${
-                        isPast
+                        isDisabled
                           ? "text-on-surface-variant/30 cursor-not-allowed"
                           : isSelected
                           ? "bg-primary-container text-on-primary-container font-bold shadow-md"
@@ -165,7 +253,7 @@ export default function BookingPage() {
               </div>
             </div>
 
-            <div className="bg-white rounded-xl p-8 shadow-[0_10px_30px_rgba(217,119,6,0.08)]">
+            <div className="bg-white rounded-xl p-8 elevation-l2">
               <h3 className="font-headline-sm text-headline-sm text-primary mb-8 flex items-center gap-2">
                 <span className="material-symbols-outlined">groups</span>
                 2. Participantes
@@ -208,7 +296,7 @@ export default function BookingPage() {
           </div>
 
           <div className="lg:col-span-5">
-            <div className="bg-white rounded-xl p-8 shadow-[0_15px_40px_rgba(124,88,0,0.1)] border border-primary/5 sticky top-32">
+            <div className="bg-white rounded-xl p-8 elevation-l3 border border-primary/5 sticky top-32">
               <h3 className="font-headline-sm text-headline-sm text-primary mb-8 flex items-center gap-2">
                 <span className="material-symbols-outlined">person</span>
                 3. Información de Contacto
@@ -245,6 +333,8 @@ export default function BookingPage() {
                       required
                       type="text"
                       placeholder="Ej. Maria Garcia"
+                      value={formData.fullName}
+                      onChange={handleFieldChange("fullName")}
                       className="w-full bg-surface-container-lowest border-outline-variant/30 rounded-lg py-3 px-4 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                     />
                   </div>
@@ -261,6 +351,8 @@ export default function BookingPage() {
                         required
                         type="email"
                         placeholder="correo@ejemplo.com"
+                        value={formData.email}
+                        onChange={handleFieldChange("email")}
                         className="w-full bg-surface-container-lowest border-outline-variant/30 rounded-lg py-3 px-4 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                       />
                     </div>
@@ -276,6 +368,8 @@ export default function BookingPage() {
                         required
                         type="tel"
                         placeholder="+51 999 999 999"
+                        value={formData.phone}
+                        onChange={handleFieldChange("phone")}
                         className="w-full bg-surface-container-lowest border-outline-variant/30 rounded-lg py-3 px-4 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                       />
                     </div>
@@ -291,6 +385,8 @@ export default function BookingPage() {
                       id="notes"
                       rows={3}
                       placeholder="Alergias, requerimientos especiales..."
+                      value={formData.notes}
+                      onChange={handleFieldChange("notes")}
                       className="w-full bg-surface-container-lowest border-outline-variant/30 rounded-lg py-3 px-4 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                     />
                   </div>
@@ -347,14 +443,19 @@ export default function BookingPage() {
                       Agrega al menos un participante para continuar.
                     </p>
                   )}
+                  {submitError && (
+                    <p className="text-sm text-error text-center">{submitError}</p>
+                  )}
 
                   <button
                     type="submit"
-                    disabled={!selectedDate || adults + children === 0}
+                    disabled={!selectedDate || adults + children === 0 || submitting}
                     className="w-full bg-primary text-white font-label-md text-label-md py-4 rounded-lg shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:shadow-lg"
                   >
-                    Confirmar y Pagar Depósito
-                    <span className="material-symbols-outlined">arrow_forward</span>
+                    {submitting ? "Enviando..." : "Confirmar y Pagar Depósito"}
+                    {!submitting && (
+                      <span className="material-symbols-outlined">arrow_forward</span>
+                    )}
                   </button>
                 </form>
               )}

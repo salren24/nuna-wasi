@@ -2,15 +2,16 @@ import { useState } from "react";
 
 export default function Newsletter() {
   const [email, setEmail] = useState("");
+  const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert("¡Gracias por unirte!");
+    setSubmitted(true);
     setEmail("");
   };
 
   return (
-    <section className="py-24 px-6 md:px-16 relative overflow-hidden">
+    <section id="newsletter" className="py-24 px-6 md:px-16 relative overflow-hidden">
       <div className="absolute inset-0 bg-primary opacity-5" />
       <div className="max-w-container-max mx-auto relative z-10">
         <div className="bg-primary text-surface rounded-[2rem] p-12 md:p-20 text-center flex flex-col items-center shadow-2xl">
@@ -22,25 +23,31 @@ export default function Newsletter() {
             Recibe noticias sobre nuestras cosechas, consejos de bienestar natural y
             descuentos exclusivos para miembros.
           </p>
-          <form
-            className="flex flex-col md:flex-row w-full max-w-lg gap-4"
-            onSubmit={handleSubmit}
-          >
-            <input
-              className="flex-grow bg-white/10 border border-white/20 rounded-lg px-6 py-4 text-surface placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-primary-container transition-all"
-              placeholder="Tu correo electrónico"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-            <button
-              type="submit"
-              className="bg-primary-container text-on-primary-container px-8 py-4 rounded-lg font-label-md hover:bg-inverse-primary transition-colors"
+          {submitted ? (
+            <p className="font-label-md text-label-md bg-white/10 border border-white/20 rounded-lg px-6 py-4 max-w-lg">
+              Listo, quedaste suscrito. Pronto recibirás noticias de la colmena.
+            </p>
+          ) : (
+            <form
+              className="flex flex-col md:flex-row w-full max-w-lg gap-4"
+              onSubmit={handleSubmit}
             >
-              Suscribirse
-            </button>
-          </form>
+              <input
+                className="flex-grow bg-white/10 border border-white/20 rounded-lg px-6 py-4 text-surface placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-primary-container transition-all"
+                placeholder="Tu correo electrónico"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+              <button
+                type="submit"
+                className="bg-primary-container text-on-primary-container px-8 py-4 rounded-lg font-label-md hover:bg-inverse-primary transition-colors"
+              >
+                Suscribirse
+              </button>
+            </form>
+          )}
           <p className="mt-6 text-primary-fixed text-xs opacity-60">
             Respetamos tu privacidad. Puedes darte de baja en cualquier momento.
           </p>

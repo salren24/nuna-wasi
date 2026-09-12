@@ -14,18 +14,20 @@ export default function Footer() {
             las abejas.
           </p>
           <div className="flex gap-4">
-            <a
-              className="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-primary hover:bg-primary hover:text-surface transition-all"
-              href="#"
+            <span
+              aria-hidden="true"
+              title="Próximamente"
+              className="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant/40 cursor-not-allowed"
             >
               <span className="material-symbols-outlined">share</span>
-            </a>
-            <a
-              className="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-primary hover:bg-primary hover:text-surface transition-all"
-              href="#"
+            </span>
+            <span
+              aria-hidden="true"
+              title="Próximamente"
+              className="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant/40 cursor-not-allowed"
             >
               <span className="material-symbols-outlined">public</span>
-            </a>
+            </span>
           </div>
         </div>
 
@@ -67,28 +69,28 @@ export default function Footer() {
           </h4>
           <ul className="space-y-4">
             <li>
-              <a
-                className="font-label-md text-on-surface-variant hover:text-primary transition-colors"
-                href="#"
+              <span
+                title="Próximamente"
+                className="font-label-md text-on-surface-variant/40 cursor-not-allowed"
               >
                 Contacto
-              </a>
+              </span>
             </li>
             <li>
-              <a
-                className="font-label-md text-on-surface-variant hover:text-primary transition-colors"
-                href="#"
+              <span
+                title="Próximamente"
+                className="font-label-md text-on-surface-variant/40 cursor-not-allowed"
               >
                 Privacidad
-              </a>
+              </span>
             </li>
             <li>
-              <a
+              <Link
                 className="font-label-md text-on-surface-variant hover:text-primary transition-colors"
-                href="#"
+                to="/#newsletter"
               >
                 Newsletter
-              </a>
+              </Link>
             </li>
           </ul>
         </div>
@@ -111,7 +113,8 @@ export default function Footer() {
 
       <div className="border-t border-outline-variant/30 pt-8 px-6 md:px-16 max-w-container-max mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
         <p className="font-label-md text-on-surface-variant text-sm">
-          © 2024 Nuna Wasi - Alma de la Colmena. Todos los derechos reservados.
+          © {new Date().getFullYear()} Nuna Wasi - Alma de la Colmena. Todos los derechos
+          reservados.
         </p>
         <div className="flex gap-6">
           <span className="material-symbols-outlined text-on-surface-variant text-2xl">

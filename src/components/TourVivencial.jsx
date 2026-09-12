@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { tourImage, tourIncludes } from "../data/content";
+import FadeIn from "./FadeIn";
 
 export default function TourVivencial() {
   const blob1Ref = useRef(null);
@@ -28,7 +29,7 @@ export default function TourVivencial() {
     <section id="tour" className="py-32 px-6 md:px-16 bg-surface">
       <div className="max-w-container-max mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          <div className="relative">
+          <FadeIn y={0} className="relative" delay={0}>
             <div className="rounded-3xl overflow-hidden shadow-2xl relative z-10">
               <div
                 className="aspect-[4/5] bg-cover bg-center"
@@ -43,14 +44,14 @@ export default function TourVivencial() {
               ref={blob2Ref}
               className="absolute -bottom-10 -right-10 w-64 h-64 bg-secondary-container rounded-full opacity-10 blur-3xl"
             />
-          </div>
+          </FadeIn>
 
-          <div className="lg:pl-12">
+          <FadeIn className="lg:pl-12" delay={0.15}>
             <span className="font-label-md text-secondary uppercase tracking-widest mb-4 block">
               Experiencias Nuna Wasi
             </span>
             <h2 className="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg mb-8">
-              TOUR VIVENCIAL DE APITURISMO - NUNA WASI 🌿🌻🐝
+              Tour vivencial de apiturismo
             </h2>
             <p className="font-body-lg text-body-lg text-on-surface-variant mb-8 leading-relaxed">
               Una aventura educativa donde conectas con la naturaleza y descubres el mundo
@@ -106,7 +107,7 @@ export default function TourVivencial() {
             >
               Reservar ahora
             </Link>
-          </div>
+          </FadeIn>
         </div>
       </div>
     </section>

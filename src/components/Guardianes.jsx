@@ -1,10 +1,11 @@
 import { guardianesValues, guardianesImages } from "../data/content";
+import FadeIn from "./FadeIn";
 
 export default function Guardianes() {
   return (
     <section className="py-32 bg-surface-variant overflow-hidden">
       <div className="max-w-container-max mx-auto px-6 md:px-16">
-        <div className="text-center max-w-3xl mx-auto mb-20">
+        <FadeIn className="text-center max-w-3xl mx-auto mb-20">
           <h2 className="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg mb-6">
             Guardianes de la Vida
           </h2>
@@ -12,22 +13,21 @@ export default function Guardianes() {
             Nuestra misión va más allá de la miel. Trabajamos para restaurar ecosistemas y
             proteger a las abejas como pilar fundamental de la biodiversidad global.
           </p>
-        </div>
+        </FadeIn>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-24">
-          {guardianesValues.map((value) => (
-            <div
-              key={value.title}
-              className="bg-surface p-10 rounded-2xl text-center hover:scale-105 transition-transform"
-            >
-              <span className="material-symbols-outlined text-5xl text-primary mb-6">
-                {value.icon}
-              </span>
-              <h4 className="font-headline-sm mb-4">{value.title}</h4>
-              <p className="font-body-md text-on-surface-variant text-sm">
-                {value.description}
-              </p>
-            </div>
+          {guardianesValues.map((value, index) => (
+            <FadeIn key={value.title} delay={index * 0.08}>
+              <div className="bg-surface p-10 rounded-2xl text-center hover:scale-105 transition-transform h-full">
+                <span className="material-symbols-outlined text-5xl text-primary mb-6">
+                  {value.icon}
+                </span>
+                <h4 className="font-headline-sm mb-4">{value.title}</h4>
+                <p className="font-body-md text-on-surface-variant text-sm">
+                  {value.description}
+                </p>
+              </div>
+            </FadeIn>
           ))}
         </div>
 

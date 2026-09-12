@@ -1,6 +1,6 @@
 export default function ProductCard({ product }) {
   return (
-    <div className="group bg-white rounded-xl overflow-hidden shadow-[0_10px_30px_rgba(124,88,0,0.08)] transition-all duration-300 hover:scale-[1.02]">
+    <div className="group bg-white rounded-xl overflow-hidden elevation-l2 transition-all duration-300 hover:scale-[1.02]">
       <div
         className="h-64 bg-cover bg-center"
         style={{ backgroundImage: `url('${product.image}')` }}
