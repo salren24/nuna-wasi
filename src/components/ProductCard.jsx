@@ -1,22 +1,27 @@
 export default function ProductCard({ product }) {
   return (
-    <div className="group bg-white rounded-xl overflow-hidden elevation-l2 transition-all duration-300 hover:scale-[1.02]">
-      <div
-        className="h-64 bg-cover bg-center"
-        style={{ backgroundImage: `url('${product.image}')` }}
-      />
-      <div className="p-6">
-        <h3 className="font-headline-sm text-headline-sm mb-2 group-hover:text-primary transition-colors text-lg">
+    <div className="group">
+      <div className="rounded-2xl overflow-hidden">
+        <div
+          className="h-64 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
+          style={{ backgroundImage: `url('${product.image}')` }}
+        />
+      </div>
+      <div className="pt-5">
+        <h3 className="font-headline-sm text-lg mb-1 group-hover:text-primary transition-colors">
           {product.name}
         </h3>
-        <p className="font-body-md text-on-surface-variant text-sm mb-4">
+        <p className="font-body-md text-on-surface-variant text-sm mb-3">
           {product.description}
         </p>
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-baseline">
           <span className="font-headline-sm text-primary text-xl">{product.price}</span>
-          <button className="material-symbols-outlined bg-surface-container text-primary p-2 rounded-full hover:bg-primary hover:text-surface transition-all">
-            add
-          </button>
+          <a
+            href="#newsletter"
+            className="font-label-md text-sm text-secondary hover:text-primary transition-colors"
+          >
+            Cómo comprar →
+          </a>
         </div>
       </div>
     </div>

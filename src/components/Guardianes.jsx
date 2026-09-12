@@ -15,17 +15,23 @@ export default function Guardianes() {
           </p>
         </FadeIn>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-24">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-16 mb-24 max-w-4xl mx-auto">
           {guardianesValues.map((value, index) => (
-            <FadeIn key={value.title} delay={index * 0.08}>
-              <div className="bg-surface p-10 rounded-2xl text-center hover:scale-105 transition-transform h-full">
-                <span className="material-symbols-outlined text-5xl text-primary mb-6">
+            <FadeIn
+              key={value.title}
+              delay={index * 0.08}
+              className={index % 2 !== 0 ? "sm:mt-16" : ""}
+            >
+              <div className="flex items-start gap-5">
+                <span className="material-symbols-outlined text-4xl text-primary shrink-0">
                   {value.icon}
                 </span>
-                <h4 className="font-headline-sm mb-4">{value.title}</h4>
-                <p className="font-body-md text-on-surface-variant text-sm">
-                  {value.description}
-                </p>
+                <div>
+                  <h4 className="font-headline-sm text-lg mb-2">{value.title}</h4>
+                  <p className="font-body-md text-on-surface-variant text-sm leading-relaxed">
+                    {value.description}
+                  </p>
+                </div>
               </div>
             </FadeIn>
           ))}

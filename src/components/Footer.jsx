@@ -4,31 +4,15 @@ import { mapImage } from "../data/content";
 export default function Footer() {
   return (
     <footer className="bg-surface-container-highest w-full rounded-t-xl pt-16 pb-8">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-12 px-6 md:px-16 max-w-container-max mx-auto mb-16">
-        <div className="col-span-1 md:col-span-1">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-12 px-6 md:px-16 max-w-container-max mx-auto mb-16">
+        <div>
           <div className="font-headline-sm text-headline-sm text-primary mb-6">
             Nuna Wasi
           </div>
-          <p className="font-body-md text-on-surface-variant mb-8">
+          <p className="font-body-md text-on-surface-variant">
             Conectando almas con el corazón de la naturaleza a través del sagrado mundo de
             las abejas.
           </p>
-          <div className="flex gap-4">
-            <span
-              aria-hidden="true"
-              title="Próximamente"
-              className="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant/40 cursor-not-allowed"
-            >
-              <span className="material-symbols-outlined">share</span>
-            </span>
-            <span
-              aria-hidden="true"
-              title="Próximamente"
-              className="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant/40 cursor-not-allowed"
-            >
-              <span className="material-symbols-outlined">public</span>
-            </span>
-          </div>
         </div>
 
         <div>
@@ -59,30 +43,6 @@ export default function Footer() {
               >
                 Sobre Nosotros
               </Link>
-            </li>
-          </ul>
-        </div>
-
-        <div>
-          <h4 className="font-label-md text-on-background mb-6 uppercase tracking-wider">
-            Soporte
-          </h4>
-          <ul className="space-y-4">
-            <li>
-              <span
-                title="Próximamente"
-                className="font-label-md text-on-surface-variant/40 cursor-not-allowed"
-              >
-                Contacto
-              </span>
-            </li>
-            <li>
-              <span
-                title="Próximamente"
-                className="font-label-md text-on-surface-variant/40 cursor-not-allowed"
-              >
-                Privacidad
-              </span>
             </li>
             <li>
               <Link

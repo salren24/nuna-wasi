@@ -79,6 +79,27 @@ export const historiaImage =
 export const mapImage =
   "https://lh3.googleusercontent.com/aida-public/AB6AXuClCryCZDAPFgd42hyDIaKYZKKoL24aAxWJfeebj0lyROaN-mXUsgIx-esSRIh3Z4O3pz1MBnyV250-zjdD5TYe_FwC_zglWF_QqAUw-ByyJfo6kIivW35lShjQWP6galbOhGqwUpXeAzIBipxG5cOgnHnQtvK_dS0CBEjLYXE8myoGLQuPS9Ln3YcgPyB7rvgNALhGDP_hAmmyRE8Rwd3jHJgd33do7xqXBDGlTLlhK_lvdWtNQUIOqqzMstG4K-T6psBgIiw7ecTu";
 
+export const honeyBenefits = [
+  {
+    icon: "bolt",
+    title: "Energía que dura toda la mañana",
+    description:
+      "Los azúcares naturales de la miel se absorben distinto al azúcar refinada: entran despacio y sostienen el ánimo sin el bajón de media tarde.",
+  },
+  {
+    icon: "healing",
+    title: "Propiedades cicatrizantes y antibacterianas",
+    description:
+      "Se usa por generaciones para calmar la garganta y ayudar a cerrar heridas menores, tal como la usaban nuestros abuelos en la chacra.",
+  },
+  {
+    icon: "spa",
+    title: "Antioxidantes de flor silvestre",
+    description:
+      "Cada cosecha del Valle de Cieneguilla concentra los polifenoles de las flores que visitan las abejas esa temporada: cada lote sabe distinto.",
+  },
+];
+
 export const guardianesValues = [
   {
     icon: "eco",

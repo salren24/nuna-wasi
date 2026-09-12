@@ -63,13 +63,6 @@ export default function Navbar() {
         <div className="flex items-center gap-4">
           <button
             type="button"
-            aria-label="Cuenta"
-            className="material-symbols-outlined text-primary text-3xl cursor-pointer hover:bg-surface-container-high/50 p-2 rounded-full transition-all"
-          >
-            account_circle
-          </button>
-          <button
-            type="button"
             onClick={() => setMenuOpen((v) => !v)}
             aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
             aria-expanded={menuOpen}
